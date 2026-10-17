@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: LGPL-2.1-or-later
+[package]
+name = "vchewing-to-chewing"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+license = "LGPL-2.1-or-later"
+publish = false
+default-run = "vchewing-to-chewing"
+
+[dependencies]
+chewing = { version = "=0.14.0-alpha.4", default-features = false }
+bstr = "1.13.1"
+tempfile = "3.27.0"
