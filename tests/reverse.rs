@@ -290,6 +290,26 @@ fn ban_only_source_creates_a_readable_pair_of_files_for_roundtrip() {
 }
 
 #[test]
+fn misplaced_source_reports_the_required_path_format_without_writes() {
+    let csv = "秘密,ㄇㄧˋ ㄇㄧˋ,10\n".as_bytes();
+    let mut c = Case::new(csv);
+    let misplaced = c._root.path().join("not-v4/user_dict.csv");
+    fs::create_dir_all(misplaced.parent().unwrap()).unwrap();
+    fs::rename(&c.source, &misplaced).unwrap();
+    c.source = misplaced;
+    for args in [&[][..], &["--apply"][..]] {
+        let out = c.run(args);
+        failure(&out);
+        let error = String::from_utf8_lossy(&out.stderr);
+        assert!(error.contains("target_path: expected BASE/v4/user_dict.csv"));
+        assert!(!error.contains("秘密"));
+        assert!(out.stdout.is_empty());
+        assert!(!c.target.exists());
+        assert_eq!(fs::read(&c.source).unwrap(), csv);
+    }
+}
+
+#[test]
 fn missing_source_and_invalid_arguments_stop_without_writes() {
     let c = Case::new(b"");
     fs::remove_file(&c.source).unwrap();

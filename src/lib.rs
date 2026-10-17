@@ -484,7 +484,7 @@ fn run_reverse(opt: &Options) -> Result<()> {
     if opt.target.as_os_str().is_empty() {
         return Err("missing_target_dir".into());
     }
-    let source = read_target(&opt.source).map_err(|_| "source_not_lossless")?;
+    let source = read_target(&opt.source).map_err(|reason| format!("source_error: {reason}"))?;
     if source.original.is_none() {
         return Err("source_missing".into());
     }
